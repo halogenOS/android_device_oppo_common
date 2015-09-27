@@ -41,16 +41,6 @@ public class GesturePadSettings extends NodePreferenceActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        // If running on a phone, remove padding around the listview
-        if (!ScreenType.isTablet(this)) {
-            getListView().setPadding(0, 0, 0, 0);
-        }
-    }
-
-    @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference.getKey().equals(Constants.TOUCHPAD_DOUBLETAP_KEY)) {
             IBinder b = ServiceManager.getService("gesture");
