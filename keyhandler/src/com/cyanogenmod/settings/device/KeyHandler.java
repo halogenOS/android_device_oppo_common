@@ -43,10 +43,12 @@ import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.service.notification.ZenModeConfig;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.KeyEvent;
@@ -78,6 +80,9 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final int MODE_PRIORITY_ONLY = 602;
     private static final int MODE_NONE = 603;
     private static final int MODE_VIBRATE = 604;
+    private static final int MODE_RING = 605;
+
+    private static final String PROP_IGNORE_AUTO = "persist.op.slider_ignore_auto";
 
     private static final int GESTURE_WAKELOCK_DURATION = 3000;
 
@@ -98,6 +103,7 @@ public class KeyHandler implements DeviceKeyHandler {
                 Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS);
         sSupportedSliderModes.put(MODE_NONE, Settings.Global.ZEN_MODE_OFF);
         sSupportedSliderModes.put(MODE_VIBRATE, 1);
+        sSupportedSliderModes.put(MODE_RING, AudioManager.RINGER_MODE_NORMAL);
     }
 
     private final Context mContext;
@@ -278,36 +284,56 @@ public class KeyHandler implements DeviceKeyHandler {
         } else if (event.getAction() != KeyEvent.ACTION_UP) {
             return true;
         }
-
-
+      
+      
+        boolean isAutoModeActive = false;
         if (isSliderModeSupported) {
-            switch (scanCode) {
-                case MODE_TOTAL_SILENCE:
-                case MODE_ALARMS_ONLY:
-                    if (mFirstBoot) {
-                        mFirstBoot = false;
-                        mRingerMode = Settings.Global.getInt(mContext.getContentResolver(),
-                                Settings.Global.MODE_RINGER, AudioManager.RINGER_MODE_NORMAL);
+            boolean ignoreAuto = SystemProperties.get(PROP_IGNORE_AUTO).equals("true");
+            if (ignoreAuto) {
+                ZenModeConfig zmc = mNotificationManager.getZenModeConfig();
+                int len = zmc.automaticRules.size();
+                for (int i = 0; i < len; i++) {
+                    if (zmc.automaticRules.valueAt(i).isAutomaticActive()) {
+                        isAutoModeActive = true;
+                        break;
                     }
-                case MODE_PRIORITY_ONLY:
-                case MODE_NONE:
-                    if (mRingerMode != AudioManager.RINGER_MODE_VIBRATE) doHapticFeedback();
-                    mContext.getContentResolver().registerContentObserver(
+                }
+            }
+        }
+
+        if (!isAutoModeActive) {
+            if (scanCode <= MODE_NONE) {
+                mNotificationManager.setZenMode(sSupportedSliderModes.get(scanCode), null, TAG);
+            } else {
+                switch (scanCode) {
+                    case MODE_TOTAL_SILENCE:
+                    case MODE_ALARMS_ONLY:
+                        if (mFirstBoot) {
+                            mFirstBoot = false;
+                            mRingerMode = Settings.Global.getInt(mContext.getContentResolver(),
+                                    Settings.Global.MODE_RINGER, AudioManager.RINGER_MODE_NORMAL);
+                        }
+                    case MODE_PRIORITY_ONLY:
+                    case MODE_NONE:
+                        mContext.getContentResolver().registerContentObserver(
                             Settings.Global.getUriFor(Settings.Global.MODE_RINGER),
                             false,
                             mRingerObserver);
-                    mAudioManager.setRingerMode(mRingerMode);
-                    mNotificationManager.setZenMode(sSupportedSliderModes.get(scanCode), null, TAG);
-                    break;
-                case MODE_VIBRATE:
-                    if (mFirstBoot) {
-                        mFirstBoot = false;
-                    }
-                    mContext.getContentResolver().unregisterContentObserver(mRingerObserver);
-                    mNotificationManager.setZenMode(Settings.Global.ZEN_MODE_OFF, null, TAG);
-                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-                    break;
+                        mAudioManager.setRingerMode(mRingerMode);
+                        mNotificationManager.setZenMode(sSupportedSliderModes.get(scanCode), null, TAG);
+                        break;
+                    case MODE_VIBRATE:
+                        if (mFirstBoot) {
+                            mFirstBoot = false;
+                        }
+                        mContext.getContentResolver().unregisterContentObserver(mRingerObserver);
+                        mNotificationManager.setZenMode(Settings.Global.ZEN_MODE_OFF, null, TAG);
+                        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                        break;
+                }
+                doHapticFeedback();
             }
+
         } else if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
             Message msg = getMessageForKeyEvent(scanCode);
             boolean defaultProximity = mContext.getResources().getBoolean(
