@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2014 The CyanogenMod Project
+# Copyright (C) 2016 halogenOS
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +17,9 @@
 
 BOARD_VENDOR := oppo
 
-# CM Hardware
-BOARD_USES_CYANOGEN_HARDWARE := true
-BOARD_HARDWARE_CLASS += \
-    hardware/cyanogen/cmhw
-
 # QCOM Power
 TARGET_POWERHAL_VARIANT := qcom
 
 # Releasetools
-TARGET_RECOVERY_UPDATER_LIBS := librecovery_updater_oppo
-TARGET_RELEASETOOLS_EXTENSIONS := device/oppo/common
+#TARGET_RECOVERY_UPDATER_LIBS := librecovery_updater_oppo
+#TARGET_RELEASETOOLS_EXTENSIONS := device/oppo/common
