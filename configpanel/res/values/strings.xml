@@ -93,4 +93,9 @@
     <string name="notification_slider_mode_priority_only">Priority only</string>
     <string name="notification_slider_mode_none">None</string>
     <string name="notification_slider_mode_vibrate">Vibrate</string>
+    
+    <!-- haptic feedback  -->
+    <string name="touchscreen_extras">Extras</string>
+    <string name="haptic_feedback">Haptic feedback</string>
+    <string name="haptic_feedback_summary">Vibrate when a gesture got detected</string>
 </resources>
