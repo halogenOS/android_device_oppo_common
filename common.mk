@@ -1,6 +1,5 @@
 #
 # Copyright (C) 2014 The CyanogenMod Project
-# Copyright (C) 2016 halogenOS
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,6 +14,19 @@
 # limitations under the License.
 #
 
+# overlays
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
+
+# Keyhandler
+PRODUCT_PACKAGES += \
+    ConfigPanel \
+    com.cyanogenmod.keyhandler
+
+PRODUCT_SYSTEM_SERVER_JARS += com.cyanogenmod.keyhandler
+
+# never dexopt the keyhandler
+$(call add-product-dex-preopt-module-config,com.cyanogenmod.keyhandler,disable)
+
 # Recovery
-#PRODUCT_PACKAGES += \
-#    librecovery_updater_oppo
+PRODUCT_PACKAGES += \
+    librecovery_updater_oppo
