@@ -22,10 +22,7 @@ PRODUCT_PACKAGES += \
     ConfigPanel \
     oppo-keyhandler
 
-PRODUCT_SYSTEM_SERVER_JARS += oppo-keyhandler
-
-# never dexopt the keyhandler
-$(call add-product-dex-preopt-module-config,oppo-keyhandler,disable)
+TARGET_KEYHANDLER_PACKAGE := oppo-keyhandler
 
 # Recovery
 PRODUCT_PACKAGES += \
