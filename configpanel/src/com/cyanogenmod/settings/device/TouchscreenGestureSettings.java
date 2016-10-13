@@ -19,10 +19,9 @@ package com.cyanogenmod.settings.device;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
+import android.provider.Settings;
 
 import com.cyanogenmod.settings.device.utils.NodePreferenceActivity;
-
-import cyanogenmod.providers.CMSettings;
 
 import org.cyanogenmod.internal.util.ScreenType;
 
@@ -45,8 +44,8 @@ public class TouchscreenGestureSettings extends NodePreferenceActivity {
         final String key = preference.getKey();
         if (KEY_HAPTIC_FEEDBACK.equals(key)) {
             final boolean value = (Boolean) newValue;
-            CMSettings.System.putInt(getContentResolver(),
-                    CMSettings.System.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, value ? 1 : 0);
+            Settings.System.putInt(getContentResolver(),
+                    Settings.System.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, value ? 1 : 0);
             return true;
         }
 
@@ -62,7 +61,7 @@ public class TouchscreenGestureSettings extends NodePreferenceActivity {
             getListView().setPadding(0, 0, 0, 0);
         }
 
-        mHapticFeedback.setChecked(CMSettings.System.getInt(getContentResolver(),
-                CMSettings.System.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, 1) != 0);
+        mHapticFeedback.setChecked(Settings.System.getInt(getContentResolver(),
+                Settings.System.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, 1) != 0);
     }
 }
