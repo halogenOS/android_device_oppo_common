@@ -26,5 +26,8 @@
     <!-- Full qualified name of the class that implements
          com.android.internal.os.DeviceKeyHandler interface. -->
     <string name="config_deviceKeyHandlerClass" translatable="false">com.cyanogenmod.settings.device.KeyHandler</string>
+    
+    <!-- True if the gesture service should be started at system start -->
+    <bool name="config_enableGestureService">true</bool>
 
 </resources>
