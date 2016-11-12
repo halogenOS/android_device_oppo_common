@@ -21,6 +21,8 @@ BOARD_USES_CYANOGEN_HARDWARE := true
 BOARD_HARDWARE_CLASS += \
     hardware/cyanogen/cmhw
 
+TARGET_NEEDS_GCC_LIBC := true
+
 # QCOM Power
 TARGET_POWERHAL_VARIANT := qcom
 
