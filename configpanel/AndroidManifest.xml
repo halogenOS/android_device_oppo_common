@@ -68,6 +68,8 @@
             <meta-data
                 android:name="com.android.settings.icon"
                 android:resource="@drawable/ic_settings_gestures" />
+            <meta-data android:name="com.android.settings.summary"
+                android:resource="@string/screen_gestures_panel_dashboard_summary" />
         </activity>
 
         <activity
@@ -93,6 +95,8 @@
             <meta-data
                 android:name="com.android.settings.category"
                 android:value="com.android.settings.category.device" />
+            <meta-data android:name="com.android.settings.summary"
+                android:resource="@string/button_panel_dashboard_summary" />
         </activity>
 
         <receiver android:name=".Startup" >
