@@ -58,7 +58,6 @@ import com.android.internal.util.ArrayUtils;
 public class KeyHandler implements DeviceKeyHandler {
 
     private static final String TAG = KeyHandler.class.getSimpleName();
-    private static final boolean DEBUG = false;
     private static final int GESTURE_REQUEST = 1;
 
     private static final String KEY_GESTURE_HAPTIC_FEEDBACK =
@@ -168,7 +167,6 @@ public class KeyHandler implements DeviceKeyHandler {
 
         mContext.getContentResolver().registerContentObserver(
                 Settings.Global.getUriFor(Settings.Global.MODE_RINGER), false, mRingerObserver);
-        Log.d(TAG, "I'm ready.");
     }
 
     private class MyTorchCallback extends CameraManager.TorchCallback {
@@ -216,7 +214,6 @@ public class KeyHandler implements DeviceKeyHandler {
     private class EventHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            if(DEBUG) Log.d(TAG, "Ok, got code " + msg.arg1);
             switch (msg.arg1) {
             case FLIP_CAMERA_SCANCODE:
             case GESTURE_CIRCLE_SCANCODE:
@@ -266,13 +263,10 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     public boolean handleKeyEvent(KeyEvent event) {
-        if (DEBUG) Log.d(TAG, "Handling key event!");
         int scanCode = event.getScanCode();
-        if (DEBUG) Log.d(TAG, "Scan code: " + scanCode);
         boolean isKeySupported = ArrayUtils.contains(sSupportedGestures, scanCode);
         boolean isSliderModeSupported = sSupportedSliderModes.indexOfKey(scanCode) >= 0;
         if (!isKeySupported && !isSliderModeSupported) {
-            if (DEBUG) Log.d(TAG, "Not supported!");
             return false;
         }
 
@@ -285,7 +279,6 @@ public class KeyHandler implements DeviceKeyHandler {
             return true;
         }
 
-        if (DEBUG) Log.d(TAG, "Passed...");
 
         if (isSliderModeSupported) {
             switch (scanCode) {
@@ -327,7 +320,7 @@ public class KeyHandler implements DeviceKeyHandler {
             } else {
                 mEventHandler.sendMessage(msg);
             }
-        } else if (DEBUG) Log.d(TAG, "I have nothing to do :(");
+        }
         return true;
     }
 
