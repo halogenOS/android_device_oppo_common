@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 The CyanogenMod Project
+ * Copyright (C) 2016-2017 The halogenOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,10 +91,8 @@ public class Startup extends BroadcastReceiver {
                         Constants.TOUCHPAD_STATE_KEY);
                 String node = Constants.sBooleanNodePreferenceMap.get(
                         Constants.TOUCHPAD_STATE_KEY);
-                if (!FileUtils.writeLine(node, value ? "1" : "0")) {
-                    Log.w(TAG, "Write to node " + node +
-                            " failed while restoring touchpad enable state");
-                }
+                // Meh
+                FileUtils.writeLine(node, value ? "1" : "0");
 
                 // Set longPress event
                 toggleLongPress(context, sInstance, Constants.isPreferenceEnabled(
@@ -158,6 +157,10 @@ public class Startup extends BroadcastReceiver {
             pendingIntent = PendingIntent.getBroadcastAsUser(
                     context, 0, doubleTapIntent, 0, UserHandle.CURRENT);
         }
+        if (pendingIntent == null) {
+            // What??
+            return;
+        }
         try {
             System.out.println("toggleDoubleTap : " + pendingIntent);
             gestureService.setOnDoubleClickPendingIntent(pendingIntent);
@@ -173,6 +176,10 @@ public class Startup extends BroadcastReceiver {
             Intent longPressIntent = new Intent(Intent.ACTION_CAMERA_BUTTON, null);
             pendingIntent = PendingIntent.getBroadcastAsUser(
                     context, 0, longPressIntent, 0, UserHandle.CURRENT);
+        }
+        if (pendingIntent == null) {
+            // What??
+            return;
         }
         try {
             System.out.println("toggleLongPress : " + pendingIntent);
