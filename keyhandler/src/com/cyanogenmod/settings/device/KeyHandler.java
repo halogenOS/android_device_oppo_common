@@ -25,6 +25,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -32,6 +33,7 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraAccessException;
+import android.media.AudioManager;
 import android.media.session.MediaSessionLegacyHelper;
 import android.net.Uri;
 import android.os.Handler;
@@ -75,6 +77,7 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final int MODE_ALARMS_ONLY = 601;
     private static final int MODE_PRIORITY_ONLY = 602;
     private static final int MODE_NONE = 603;
+    private static final int MODE_VIBRATE = 604;
 
     private static final int GESTURE_WAKELOCK_DURATION = 3000;
 
@@ -94,6 +97,7 @@ public class KeyHandler implements DeviceKeyHandler {
         sSupportedSliderModes.put(MODE_PRIORITY_ONLY,
                 Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS);
         sSupportedSliderModes.put(MODE_NONE, Settings.Global.ZEN_MODE_OFF);
+        sSupportedSliderModes.put(MODE_VIBRATE, 1);
     }
 
     private final Context mContext;
@@ -111,6 +115,23 @@ public class KeyHandler implements DeviceKeyHandler {
     WakeLock mGestureWakeLock;
     private int mProximityTimeOut;
     private boolean mProximityWakeSupported;
+    private AudioManager mAudioManager;
+    private int mRingerMode;
+    private boolean mFirstBoot;
+    private Handler mHandler = new Handler();
+    private ContentObserver mRingerObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange) {
+        super.onChange(selfChange);
+            int ringerMode = Settings.Global.getInt(mContext.getContentResolver(),
+                    Settings.Global.MODE_RINGER, 0);
+            // "Total silence" and "Alarm only" equals silent ringer mode. We
+            // don't want to mess with it.
+            if (ringerMode != AudioManager.RINGER_MODE_SILENT) {
+                mRingerMode = ringerMode;
+            }
+        }
+    };
 
     public KeyHandler(Context context) {
         mContext = context;
@@ -120,6 +141,7 @@ public class KeyHandler implements DeviceKeyHandler {
         mEventHandler = new EventHandler();
         mGestureWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "GestureWakeLock");
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         final Resources resources = mContext.getResources();
         mProximityTimeOut = resources.getInteger(
@@ -141,6 +163,9 @@ public class KeyHandler implements DeviceKeyHandler {
 
         mCameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
         mCameraManager.registerTorchCallback(new MyTorchCallback(), mEventHandler);
+
+        mContext.getContentResolver().registerContentObserver(
+                Settings.Global.getUriFor(Settings.Global.MODE_RINGER), false, mRingerObserver);
     }
 
     private class MyTorchCallback extends CameraManager.TorchCallback {
@@ -254,8 +279,33 @@ public class KeyHandler implements DeviceKeyHandler {
         }
 
         if (isSliderModeSupported) {
-            mNotificationManager.setZenMode(sSupportedSliderModes.get(scanCode), null, TAG);
-            doHapticFeedback();
+            switch (scanCode) {
+                case MODE_TOTAL_SILENCE:
+                case MODE_ALARMS_ONLY:
+                    if (mFirstBoot) {
+                        mFirstBoot = false;
+                        mRingerMode = Settings.Global.getInt(mContext.getContentResolver(),
+                                Settings.Global.MODE_RINGER, AudioManager.RINGER_MODE_NORMAL);
+                    }
+                case MODE_PRIORITY_ONLY:
+                case MODE_NONE:
+                    if (mRingerMode != AudioManager.RINGER_MODE_VIBRATE) doHapticFeedback();
+                    mContext.getContentResolver().registerContentObserver(
+                            Settings.Global.getUriFor(Settings.Global.MODE_RINGER),
+                            false,
+                            mRingerObserver);
+                    mAudioManager.setRingerMode(mRingerMode);
+                    mNotificationManager.setZenMode(sSupportedSliderModes.get(scanCode), null, TAG);
+                    break;
+                case MODE_VIBRATE:
+                    if (mFirstBoot) {
+                        mFirstBoot = false;
+                    }
+                    mContext.getContentResolver().unregisterContentObserver(mRingerObserver);
+                    mNotificationManager.setZenMode(Settings.Global.ZEN_MODE_OFF, null, TAG);
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    break;
+            }
         } else if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
             Message msg = getMessageForKeyEvent(scanCode);
             boolean defaultProximity = mContext.getResources().getBoolean(
