@@ -35,6 +35,9 @@
         android:defaultToDeviceProtectedStorage="true"
         android:directBootAware="true">
 
+        <!-- stub to ensure its loaded - DO NOT REMOVE -->
+        <activity android:name=".KeyHandler"/>
+
         <provider
             android:name=".ConfigPanelSearchIndexablesProvider"
             android:authorities="com.cyanogenmod.settings.device"
