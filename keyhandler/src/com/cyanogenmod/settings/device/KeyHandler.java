@@ -343,6 +343,14 @@ public class KeyHandler implements DeviceKeyHandler {
                         mNotificationManager.setZenMode(Settings.Global.ZEN_MODE_OFF, null, TAG);
                         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                         break;
+                    case MODE_RING:
+                        if (mFirstBoot) {
+                            mFirstBoot = false;
+                        }
+                        mContext.getContentResolver().unregisterContentObserver(mRingerObserver);
+                        mNotificationManager.setZenMode(Settings.Global.ZEN_MODE_OFF, null, TAG);
+                        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        break;
                 }
                 doHapticFeedback();
             }
