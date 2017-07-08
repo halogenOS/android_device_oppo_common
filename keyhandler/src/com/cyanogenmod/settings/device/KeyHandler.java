@@ -301,8 +301,21 @@ public class KeyHandler implements DeviceKeyHandler {
             }
         }
 
+        if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
+            Message msg = getMessageForKeyEvent(scanCode);
+            boolean defaultProximity = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_proximityCheckOnWakeEnabledByDefault);
+            boolean proximityWakeCheckEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.PROXIMITY_ON_WAKE, defaultProximity ? 1 : 0) == 1;
+            if (mProximityWakeSupported && proximityWakeCheckEnabled && mProximitySensor != null) {
+                mEventHandler.sendMessageDelayed(msg, mProximityTimeOut);
+                processEvent(scanCode);
+            } else {
+                mEventHandler.sendMessage(msg);
+            }
+        }
         if (!isAutoModeActive) {
-            if (scanCode <= MODE_NONE) {
+            if (scanCode <= MODE_NONE && scanCode >= 600) {
                 mNotificationManager.setZenMode(sSupportedSliderModes.get(scanCode), null, TAG);
             } else {
                 switch (scanCode) {
@@ -332,19 +345,6 @@ public class KeyHandler implements DeviceKeyHandler {
                         break;
                 }
                 doHapticFeedback();
-            }
-
-        } else if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
-            Message msg = getMessageForKeyEvent(scanCode);
-            boolean defaultProximity = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_proximityCheckOnWakeEnabledByDefault);
-            boolean proximityWakeCheckEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROXIMITY_ON_WAKE, defaultProximity ? 1 : 0) == 1;
-            if (mProximityWakeSupported && proximityWakeCheckEnabled && mProximitySensor != null) {
-                mEventHandler.sendMessageDelayed(msg, mProximityTimeOut);
-                processEvent(scanCode);
-            } else {
-                mEventHandler.sendMessage(msg);
             }
         }
         return true;
