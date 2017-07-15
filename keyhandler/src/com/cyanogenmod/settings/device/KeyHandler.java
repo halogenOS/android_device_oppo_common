@@ -352,8 +352,8 @@ public class KeyHandler implements DeviceKeyHandler {
                         mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                         break;
                 }
-                doHapticFeedback();
             }
+            doHapticFeedback();
         }
         return true;
     }
