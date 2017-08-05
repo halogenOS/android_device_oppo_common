@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
   <!-- O-Touch settings -->
   <string name="touchpad_enable_title">Attiva O-Touch</string>
   <string name="touchpad_enable_summary">Touchpad posteriore per navigazione telefono</string>
@@ -23,7 +24,13 @@
   <string name="touchpad_long_press_summary">Premere a lungo il touchpad avvierà l\'app della fotocamera</string>
   <string name="touchpad_double_tap_title">Doppio tocco per scattare</string>
   <string name="touchpad_double_tap_summary">Quando la fotocamera è avviata, tocca due volte per scattare foto</string>
+
   <!-- Gesture shortcuts -->
+  <string name="screen_gestures_panel_title">Gesti OnePlus</string>
+  <string name="gestures_dashboard_summary">Gesti specifici per dispositivi OnePlus</string>
+
+  <string name="touchscreen_double_tap_gesture_title">Risveglia dispositivo</string>
+  <string name="touchscreen_double_tap_gesture_summary">Doppio tocco per risvegliare il dispositivo</string>
   <string name="touchscreen_camera_gesture_title">Fotocamera</string>
   <string name="touchscreen_camera_gesture_summary">Disegnare un cerchio per attivare la fotocamera</string>
   <string name="touchscreen_music_gesture_title">Musica</string>
@@ -33,6 +40,7 @@
     • Due dita verticalmente per riprodurre/mettere in pausa\n
     • Disegna una freccia verso sinistra (\'&lt;\') per la traccia precedente\n
     • Disegna una freccia verso destra (\'&gt;\') per la traccia successiva</string>
+
   <!-- O-Click settings -->
   <string name="oclick_connect_string">Connetti</string>
   <string name="oclick_disconnect_string">Disconnetti</string>
@@ -49,18 +57,28 @@
   <string name="oclick_disconnect_alert_summary">Avvisa quando si è fuori dalla portata</string>
   <string name="alert_category_title">Allarmi</string>
   <string name="action_category_title">Azioni</string>
+
   <!-- O-Click notification -->
   <string name="oclick_locator_notification_title">Localizzatore telefono O-Click</string>
   <string name="oclick_locator_notification_text">Avviso del localizzatore in esecuzione. Tocca per fermare</string>
   <string name="oclick_notification_title_connected">O-Click connesso</string>
   <string name="oclick_notification_title_disconnected">O-Click disconnesso</string>
   <string name="oclick_notification_content_disconnected">Premi il tasto O-Click per riconnettere</string>
+
+  <!-- haptic feedback  -->
+  <string name="touchscreen_extras">Extra</string>
+  <string name="haptic_feedback">Riscontro aptico</string>
+  <string name="haptic_feedback_summary">Vibra quando viene rilevato un gesto</string>
+
   <!-- Button settings -->
-  <string name="button_panel_title">Pulsanti aggiuntivi</string>
+  <string name="button_panel_title">Pulsanti OnePlus</string>
   <string name="button_swap_title">Inverti pulsanti</string>
   <string name="button_swap_summary">Inverti la posizione dei tasti indietro e panoramica</string>
+    <string name="buttons_dashboard_summary">Inverti pulsanti e personalizza slider notifiche</string>
   <!-- Notification slider -->
   <string name="notification_slider_category_title">Slider notifiche</string>
+  <string name="notification_slider_ignore_auto_title">Disattiva durante regole automatiche</string>
+  <string name="notification_slider_ignore_auto_summary">Ignora lo slider quando è attiva una regola automatica</string>
   <string name="notification_slider_selection_dialog_title">Azione</string>
   <string name="notification_slider_top_position">Posizione superiore</string>
   <string name="notification_slider_middle_position">Posizione centrale</string>
@@ -68,5 +86,7 @@
   <string name="notification_slider_mode_total_silence">Silenzio totale</string>
   <string name="notification_slider_mode_alarms_only">Solo sveglie</string>
   <string name="notification_slider_mode_priority_only">Solo priorità</string>
-  <string name="notification_slider_mode_none">Nulla</string>
+  <string name="notification_slider_mode_none">Tutte le notifiche</string>
+  <string name="notification_slider_mode_vibrate">Vibrazione</string>
+  <string name="notification_slider_mode_ring">Suoneria</string>
 </resources>
