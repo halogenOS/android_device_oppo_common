@@ -18,11 +18,11 @@
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Keyhandler
-PRODUCT_PACKAGES += \
-    ConfigPanel \
-    oppo-keyhandler
+#PRODUCT_PACKAGES += \
+#    ConfigPanel \
+#    oppo-keyhandler
 
-TARGET_KEYHANDLER_PACKAGE := oppo-keyhandler
+#TARGET_KEYHANDLER_PACKAGE := oppo-keyhandler
 
 # Recovery
 # PRODUCT_PACKAGES += \
