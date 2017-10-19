@@ -22,6 +22,8 @@ PRODUCT_PACKAGES += \
     ConfigPanel \
     oppo-keyhandler
 
+PRODUCT_BOOT_JARS += oppo-keyhandler
+
 TARGET_KEYHANDLER_PACKAGE := oppo-keyhandler
 
 # Recovery
