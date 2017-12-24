@@ -27,5 +27,5 @@ PRODUCT_BOOT_JARS += oppo-keyhandler
 TARGET_KEYHANDLER_PACKAGE := oppo-keyhandler
 
 # Recovery
-# PRODUCT_PACKAGES += \
-#    librecovery_updater_oppo
+PRODUCT_PACKAGES += \
+    librecovery_updater_oppo
