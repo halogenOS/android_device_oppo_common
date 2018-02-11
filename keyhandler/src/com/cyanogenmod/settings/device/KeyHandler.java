@@ -421,7 +421,7 @@ public class KeyHandler implements DeviceKeyHandler {
         boolean enabled = Settings.System.getInt(mContext.getContentResolver(),
                 KEY_GESTURE_HAPTIC_FEEDBACK, 1) != 0;
         if (enabled) {
-            mVibrator.vibrate(50);
+            mVibrator.vibrate(35);
         }
     }
 }
