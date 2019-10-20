@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+ifeq (true,false)
 
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
@@ -39,3 +40,4 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_PACKAGE)
+endif
